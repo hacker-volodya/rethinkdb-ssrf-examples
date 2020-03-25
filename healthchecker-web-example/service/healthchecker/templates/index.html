@@ -1,0 +1,65 @@
+<style>
+    input, textarea, label {
+        display: block;
+    }
+
+    label {
+        margin-bottom: 10px;
+    }
+
+    table, th, td {
+        border: solid 1px;
+    }
+
+    td {
+        padding: 5px;
+    }
+
+    #add-url {
+        margin-bottom: 50px;
+    }
+</style>
+
+<h3>Add healthcheck url</h3>
+<form method="POST" id="add-url">
+    <label>Url: <input name="url"></label>
+    <label>Method (GET/POST): <input name="method"></label>
+    <label>Body: <textarea name="body"></textarea></label>
+    <button type="submit">Add</button>
+</form>
+{% if targets|length > 0 %}
+    {% for target in targets %}
+
+        <h3>Reports for {{ target["id"] }}</h3>
+        <form action="/delete/{{ target["id"] }}" method="POST">
+            [<a href="#" onclick="this.closest('form').submit();return false;">delete</a>]
+        </form>
+        <pre>Url: {{ target["url"] }}
+Method: {{ target["method"] }}
+Body: {{ target["body"] }}</pre>
+
+        {% if target["reports"]|length > 0 %}
+            <table>
+                <thead>
+                <tr>
+                    <th>Time</th>
+                    <th>Result</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for report in target["reports"] %}
+                    <tr>
+                        <td>{{ report["date"] }}</td>
+                        <td>{{ report["message"] }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            No reports.
+        {% endif %}
+
+    {% endfor %}
+{% else %}
+    No targets.
+{% endif %}
